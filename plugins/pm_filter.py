@@ -111,9 +111,13 @@ async def pm_spoll_tester(bot, query):
         await pm_AutoFilter(bot, query, k)
     else:
         await bot.send_message(LOG_CHANNEL, script.NO_RESULT_TXT.format(query.message.chat.title, query.message.chat.id, query.from_user.mention, search))
-        k = await query.message.edit('This Movie Not Found In DataBase')
-        await asyncio.sleep(10)
+        k = await query.message.edit(f"👋 Hello {query.from_user.mention},\n\nI don't find <b>'{search}'</b> in my database. 😔\n\n Try after sometimes ❤️")
+        await asyncio.sleep(60)
         await k.delete()
+        try:
+            await query.message.reply_to_message.delete()
+        except:
+            pass
 
 
 async def pm_AutoFilter(client, msg, pmspoll=False):  
