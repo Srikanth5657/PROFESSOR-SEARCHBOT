@@ -110,8 +110,8 @@ async def pm_spoll_tester(bot, query):
         k = (movie, files, offset, total_results)
         await pm_AutoFilter(bot, query, k)
     else:
-        await bot.send_message(LOG_CHANNEL, script.NO_RESULT_TXT.format(query.message.chat.title, query.message.chat.id, query.from_user.mention, search))
         k = await query.message.edit(f"👋 Hello {query.from_user.mention},\n\nI don't find <b>'{search}'</b> in my database. 😔\n\n Try after sometimes ❤️")
+        await bot.send_message(LOG_CHANNEL, script.NO_RESULT_TXT.format(query.message.chat.title, query.message.chat.id, query.from_user.mention, search))
         await asyncio.sleep(60)
         await k.delete()
         try:
@@ -120,7 +120,7 @@ async def pm_spoll_tester(bot, query):
             pass
 
 
-async def pm_AutoFilter(client, msg, pmspoll=False):  
+async def pm_AutoFilter(client, msg, pmspoll=True):  
     if not pmspoll:
         message = msg   
         if message.text.startswith("/"): return  # ignore commands
