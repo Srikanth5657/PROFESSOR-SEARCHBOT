@@ -158,18 +158,6 @@ By {f}
 <b>᚛› 𝐔𝐍 - @{}</b>
 
 By @{} """
-
-    NO_RESULT_TXT = """#NoResult
-★ Group Name: {}
-★ Group ID: <code>{}</code>
-★ Name: {}
-
-★ Message: {}"""
-
-    REQUEST_TXT = """★ Name: {}
-★ ID: <code>{}</code>
-
-★ Message: {}"""
    
     ZOMBIES_TXT = """𝙷𝙴𝙻𝙿 𝚈𝙾𝚄 𝚃𝙾 𝙺𝙸𝙲𝙺 𝚄𝚂𝙴𝚁𝚂
 
