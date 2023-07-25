@@ -16,6 +16,8 @@ from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.filters_mdb import del_all, find_filter, get_filters
 from database.gfilters_mdb import find_gfilter, get_gfilters
 from plugins.helper.admin_check import admin_fliter
+import os
+req_channel = int(os.environ.get('REQ_CHANNEL','-1001980062268'))
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
