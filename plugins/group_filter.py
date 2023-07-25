@@ -200,10 +200,11 @@ async def auto_filter(client, msg, spoll=False):
             search = message.text
             files, offset, total_results = await get_search_results(search.lower(), offset=0, filter=True)
             if not files:
-                if settings["spell_check"]:
-                    return await advantage_spell_chok(msg)
-                else:
-                    return
+                await client.send_message(req_channel, f"#REQUESTED_CONTENT \n\nCONTENT NAME:{search} \nREQUESTED BY : {message.from_user.first_name}\nUSER ID : {message.from_user.id}", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🦋 Mark As Done 🦋", callback_data="close_data")]]))
+                await message.reply_text("Hello {message.from_user.first_name} ❤️. \n\n Your request has been sent to our admin !  \n\n ❤️ Thank You ❤️")
+                return
+            else:
+                return
         else:
             return
     else:
