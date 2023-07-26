@@ -16,8 +16,6 @@ from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.filters_mdb import del_all, find_filter, get_filters
 from database.gfilters_mdb import find_gfilter, get_gfilters
 from plugins.helper.admin_check import admin_fliter
-import os
-req_channel = int(os.environ.get('REQ_CHANNEL','-1001980062268'))
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
@@ -100,15 +98,35 @@ async def gp_next_page(bot, query):
     if SHORT_URL and SHORT_API:          
         if settings["button"]:
             btn = [[InlineKeyboardButton(text=f"[{get_size(file.file_size)}] {file.file_name}", url=await get_shortlink(f"https://telegram.dog/{temp.U_NAME}?start=files_{file.file_id}"))] for file in files ]
+            btn.insert(0,
+                  [
+                      InlineKeyboardButton(text="⚡ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ⚡", url='https://telegram.me/howtoopenlinksgm/4')
+                  ]
+        )
         else:
             btn = [[InlineKeyboardButton(text=f"{file.file_name}", url=await get_shortlink(f"https://telegram.dog/{temp.U_NAME}?start=files_{file.file_id}")),
                     InlineKeyboardButton(text=f"{get_size(file.file_size)}", url=await get_shortlink(f"https://telegram.dog/{temp.U_NAME}?start=files_{file.file_id}"))] for file in files ]
+            btn.insert(0,
+                  [
+                      InlineKeyboardButton(text="⚡ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ⚡", url='https://telegram.me/howtoopenlinksgm/4')
+                  ]
+        )
     else:        
         if settings["button"]:
             btn = [[InlineKeyboardButton(text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f'files#{nxreq}#{file.file_id}')] for file in files ]
+            btn.insert(0,
+                  [
+                      InlineKeyboardButton(text="⚡ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ⚡", url='https://telegram.me/howtoopenlinksgm/4')
+                  ]
+        )
         else:
             btn = [[InlineKeyboardButton(text=f"{file.file_name}", callback_data=f'files#{nxreq}#{file.file_id}'),
                     InlineKeyboardButton(text=f"{get_size(file.file_size)}", callback_data=f'files#{nxreq}#{file.file_id}')] for file in files ]
+            btn.insert(0,
+                  [
+                      InlineKeyboardButton(text="⚡ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ⚡", url='https://telegram.me/howtoopenlinksgm/4')
+                  ]
+        )
 
     if 0 < offset <= 10:
         off_set = 0
@@ -163,8 +181,8 @@ async def advantage_spoll_choker(bot, query):
             k = (movie, files, offset, total_results)
             await auto_filter(bot, query, k)
         else:
-            k = await query.message.edit('This Movie Not Found In DataBase')
-            await asyncio.sleep(10)
+            k = await query.message.edit("<b>ᴛʜɪꜱ ᴍᴏᴠɪᴇ ɪꜱ ɴᴏᴛ ʏᴇᴛ  ʀᴇʟᴇᴀꜱᴇᴅ ᴏʀ ᴀᴅᴅᴇᴅ ᴛᴏ ᴅᴀᴛᴀʙᴀꜱᴇ</b>", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🎯 Request To Admin 🎯", url=f"https://t.me/MissGeethaBot")]]))
+            await asyncio.sleep(60)
             await k.delete()
 
 
@@ -202,11 +220,10 @@ async def auto_filter(client, msg, spoll=False):
             search = message.text
             files, offset, total_results = await get_search_results(search.lower(), offset=0, filter=True)
             if not files:
-                await client.send_message(req_channel, f"#REQUESTED_CONTENT \n\nCONTENT NAME:{search} \nREQUESTED BY : {message.from_user.first_name}\nUSER ID : {message.from_user.id}", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🦋 Mark As Done 🦋", callback_data="close_data")]]))
-                await message.reply_text("Hello {message.from_user.first_name} ❤️. \n\n Your request has been sent to our admin !  \n\n ❤️ Thank You ❤️")
-                return
-            else:
-                return
+                if settings["spell_check"]:
+                    return await advantage_spell_chok(msg)
+                else:
+                    return
         else:
             return
     else:
@@ -219,15 +236,35 @@ async def auto_filter(client, msg, spoll=False):
     if SHORT_URL and SHORT_API:          
         if settings["button"]:
             btn = [[InlineKeyboardButton(text=f"[{get_size(file.file_size)}] {file.file_name}", url=await get_shortlink(f"https://telegram.dog/{temp.U_NAME}?start=pre_{file.file_id}"))] for file in files ]
+            btn.insert(0,
+                  [
+                      InlineKeyboardButton(text="⚡ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ⚡", url='https://telegram.me/howtoopenlinksgm/4')
+                  ]
+        )
         else:
             btn = [[InlineKeyboardButton(text=f"{file.file_name}", url=await get_shortlink(f"https://telegram.dog/{temp.U_NAME}?start=pre_{file.file_id}")),
                     InlineKeyboardButton(text=f"{get_size(file.file_size)}", url=await get_shortlink(f"https://telegram.dog/{temp.U_NAME}?start=pre_{file.file_id}"))] for file in files ]
+            btn.insert(0,
+                  [
+                      InlineKeyboardButton(text="⚡ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ⚡", url='https://telegram.me/howtoopenlinksgm/4')
+                  ]
+        )
     else:        
         if settings["button"]:
             btn = [[InlineKeyboardButton(text=f"[{get_size(file.file_size)}] {file.file_name}", callback_data=f'{pre}#{req}#{file.file_id}')] for file in files ]
+            btn.insert(0,
+                  [
+                      InlineKeyboardButton(text="⚡ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ⚡", url='https://telegram.me/howtoopenlinksgm/4')
+                  ]
+        )
         else:
             btn = [[InlineKeyboardButton(text=f"{file.file_name}", callback_data=f'{pre}#{req}#{file.file_id}'),
                     InlineKeyboardButton(text=f"{get_size(file.file_size)}", callback_data=f'{pre}#{req}#{file.file_id}')] for file in files ] 
+            btn.insert(0,
+                  [
+                      InlineKeyboardButton(text="⚡ʜᴏᴡ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ⚡", url='https://telegram.me/howtoopenlinksgm/4')
+                  ]
+        )
 
     if offset != "":
         key = f"{message.chat.id}-{message.id}"
@@ -279,7 +316,7 @@ async def auto_filter(client, msg, spoll=False):
             **locals()
         )
     else:
-        cap = f"⚡Baby, Here is what i found for your query {search}"
+        cap = f"⚡Baby, Here is what i found for your query {search}  [FILES]"
     if imdb and imdb.get('poster'):
         try:
             hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap, reply_markup=InlineKeyboardMarkup(btn))
@@ -355,8 +392,7 @@ async def advantage_spell_chok(msg):
         )
     ] for k, movie in enumerate(movielist)]
     btn.append([InlineKeyboardButton(text="Close", callback_data=f'spolling#{user}#close_spellcheck')])
-    await msg.reply("I couldn't find anything related to that\nDid you mean any one of these?",
-                    reply_markup=InlineKeyboardMarkup(btn))
+    await msg.reply_photo(photo="https://te.legra.ph/file/797fdd9725eb981fa087a.jpg", caption="<i><b>I couldn't find anything related to that. \nDid you mean any of these ?</i></b>",reply_markup=InlineKeyboardMarkup(btn), reply_to_message_id=msg.id)
 
 async def manual_filters(client, message, text=False):
     group_id = message.chat.id
@@ -476,11 +512,3 @@ async def global_filters(client, message, text=False):
                 break
     else:
         return False
-
-
-
-
-
-
-
-
