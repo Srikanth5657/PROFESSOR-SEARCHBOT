@@ -2,7 +2,7 @@ import asyncio, re, ast, math, logging, pyrogram
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from Script import script
 from utils import get_shortlink 
-from info import AUTH_USERS, PM_IMDB, SINGLE_BUTTON, PROTECT_CONTENT, SPELL_CHECK_REPLY, IMDB_TEMPLATE, IMDB_DELET_TIME, PMFILTER, G_FILTER, SHORT_URL, SHORT_API
+from info import AUTH_USERS, PM_IMDB, SINGLE_BUTTON, PROTECT_CONTENT, SPELL_CHECK_REPLY, IMDB_TEMPLATE, IMDB_DELET_TIME, PMFILTER, G_FILTER, SHORT_URL, SHORT_API, REQ_CHANNEL
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters, enums 
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
@@ -16,6 +16,7 @@ logger.setLevel(logging.ERROR)
 
 PM_BUTTONS = {}
 PM_SPELL_CHECK = {}
+req_channel = REQ_CHANNEL
 
 @Client.on_message(filters.private & filters.text & filters.chat(AUTH_USERS) if AUTH_USERS else filters.text & filters.private)
 async def auto_pm_fill(b, m):
@@ -101,6 +102,7 @@ async def pm_spoll_tester(bot, query):
     if movie_ == "close_spellcheck":
         return await query.message.delete()
     movies = PM_SPELL_CHECK.get(query.message.reply_to_message.id)
+
     if not movies:
         return await query.answer("You are clicking on an old button which is expired.", show_alert=True)
     movie = movies[(int(movie_))]
@@ -110,8 +112,8 @@ async def pm_spoll_tester(bot, query):
         k = (movie, files, offset, total_results)
         await pm_AutoFilter(bot, query, k)
     else:
-        k = await query.message.edit('This Movie Not Found In DataBase')
-        await asyncio.sleep(10)
+        k = await query.message.edit(f"<b>Hey Dear, The Requested Content is Currently Not Available in My Database. Have Some Patience 🙂 - Our great admin will upload it as soon as possible </b>")
+        await asyncio.sleep(60)
         await k.delete()
 
 
@@ -121,10 +123,18 @@ async def pm_AutoFilter(client, msg, pmspoll=False):
         if message.text.startswith("/"): return  # ignore commands
         if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
             return
-        if 2 < len(message.text) < 100:
+        if 2 < len(message.text) < 1000:
             search = message.text
+            requested_movie = search.strip()
+            user_id = message.from_user.id
             files, offset, total_results = await get_search_results(search.lower(), offset=0, filter=True)
             if not files:
+                await client.send_message(req_channel,f"-☃️ #REQUESTED_CONTENT ☃️-\n\n📝**Content Name** :`{search}`\n**Requested By**: {message.from_user.first_name}\n **USER ID**:{user_id}\n\n🗃️",
+                                                                                                       reply_markup=InlineKeyboardMarkup([
+                                                                                                                                        [InlineKeyboardButton(text=f"✅Upload Done", callback_data=f"notify_userupl:{user_id}:{requested_movie}")],
+                                                                                                                                        [InlineKeyboardButton(text=f"⚡Already Upl..", callback_data=f"notify_user_alrupl:{user_id}:{requested_movie}"),InlineKeyboardButton("🖊Spell Error", callback_data=f"notify_user_spelling_error:{user_id}:{requested_movie}")],
+                                                                                                                                        [InlineKeyboardButton(text=f"😒Not Available", callback_data=f"notify_user_not_avail:{user_id}:{requested_movie}"),InlineKeyboardButton("❌Reject Req", callback_data=f"notify_user_req_rejected:{user_id}:{requested_movie}")],
+                                                                                                                                        ]))
                 return await pm_spoll_choker(msg)              
         else:
             return 
@@ -197,7 +207,7 @@ async def pm_AutoFilter(client, msg, pmspoll=False):
             **locals()
         )
     else:
-        cap = f"<code> {search} </code>"
+        cap = f"⚡Here is what i found for your query <b>{search}</b>"
     if imdb and imdb.get('poster'):
         try:
             hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap, reply_markup=InlineKeyboardMarkup(btn))
@@ -267,4 +277,6 @@ async def pm_spoll_choker(msg):
     PM_SPELL_CHECK[msg.id] = movielist
     btn = [[InlineKeyboardButton(text=movie.strip(), callback_data=f"pmspelling#{user}#{k}")] for k, movie in enumerate(movielist)]
     btn.append([InlineKeyboardButton(text="Close", callback_data=f'pmspelling#{user}#close_spellcheck')])
-    await msg.reply("𝖢𝖺𝗇'𝗍 𝖥𝗂𝗇𝖽 𝖨𝗍 𝖡𝗋𝖺𝗏 𝖣𝗈 𝗒𝗈𝗎 𝗆𝖾𝖺𝗇 𝖺𝗇𝗒 𝗈𝖿 𝗍𝗁𝖾𝗌𝖾?", reply_markup=InlineKeyboardMarkup(btn), reply_to_message_id=msg.id)
+    l = await msg.reply("𝙲𝚊𝚗'𝚝 𝙵𝚒𝚗𝚍 𝙸𝚝 𝙱𝚛𝚊𝚟. 𝙳𝚘 𝚈𝚘𝚞 𝙼𝚎𝚊𝚗 𝙰𝚗𝚢 𝙾𝚏 𝚃𝚑𝚎𝚜𝚎?", reply_markup=InlineKeyboardMarkup(btn), reply_to_message_id=msg.id)
+    await asyncio.sleep(300)
+    await l.delete()
